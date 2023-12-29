@@ -1,3 +1,6 @@
+
+import { existsSync } from 'fs';
+
 const server = Bun.serve({
   port: 3000,
   async fetch(request) {
@@ -9,6 +12,11 @@ const server = Bun.serve({
 
     // Remove leading slash and replace remaining slashes with directory separators
     const filePath: string = import.meta.dir + '/' +  path.replace(/^\/|\/$/g, '') + '.json';
+
+    // Check if the file exists
+    if (!existsSync(filePath)) {
+      return new Response("File not found", { status: 404 });
+    }
 
     // Read the file
     const file = Bun.file(filePath);
