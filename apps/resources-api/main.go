@@ -35,23 +35,22 @@ func init() {
 
 }
 
-type BlogPost struct {
-	// ID    primitive.ObjectID `bson:"_id"`
-	// Title string             `bson:"title"`
-	// Body  string             `bson:"body"`
-	Type  string `bson:"type"`
-	Hello string `bson:"hello"`
-}
-
 func handleRequest(w http.ResponseWriter, r *http.Request) {
+	// Get the 'collection' query parameter
+	collectionParam := r.URL.Query().Get("collection")
+	if collectionParam == "" {
+		http.Error(w, "Missing 'collection' query parameter", http.StatusBadRequest)
+		return
+	}
+
 	// Get a handle for your collection
-	collection := client.Database("resources").Collection("blogs")
+	collection := client.Database("resources").Collection(collectionParam)
 
 	// Define the filter
 	filter := bson.D{{Key: "type", Value: "article"}}
 
 	// Execute the query
-	var results []BlogPost
+	var results []map[string]interface{}
 	cursor, err := collection.Find(context.TODO(), filter)
 	if err != nil {
 		panic(err)

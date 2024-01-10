@@ -24,3 +24,9 @@ Run web server:
 ```
 go run main.go
 ```
+
+
+Client Request:
+```
+curl http://localhost:8080/query?collection=blogs
+```
