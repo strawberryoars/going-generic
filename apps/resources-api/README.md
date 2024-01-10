@@ -17,6 +17,9 @@ go mod init github.com/strawberryoars/going-generic/apps/resources-api
 ```
 
 
+Define mongodb uri in .env file
+
+
 Run web server:
 ```
 go run main.go
