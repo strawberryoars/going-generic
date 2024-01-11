@@ -36,20 +36,16 @@ func init() {
 
 func handleRequest(w http.ResponseWriter, r *http.Request) {
 
-	// Get the 'collection' query parameter
 	collectionParam := r.URL.Query().Get("collection")
 	if collectionParam == "" {
 		http.Error(w, "Missing 'collection' query parameter", http.StatusBadRequest)
 		return
 	}
 
-	// Get a handle for your collection
 	collection := client.Database("resources").Collection(collectionParam)
 
-	// Define the filter
 	filter := bson.D{{Key: "type", Value: "article"}}
 
-	// Execute the query
 	var results []map[string]interface{}
 	cursor, err := collection.Find(context.TODO(), filter)
 	if err != nil {
@@ -59,7 +55,6 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	// Convert results to JSON and write to the r esponse
 	res, _ := json.Marshal(results)
 
 	log.Println(res)
@@ -88,17 +83,14 @@ func deleteHandler(w http.ResponseWriter, r *http.Request, resourceName string) 
 }
 
 func resourceHandler(w http.ResponseWriter, r *http.Request) {
-	// Split the URL path into parts
 	parts := strings.Split(r.URL.Path, "/")
 	if len(parts) < 3 || parts[1] != "resources" {
 		http.NotFound(w, r)
 		return
 	}
 
-	// The resource name is the third part of the URL
 	resourceName := parts[2]
 
-	// Now you can use resourceName in your handler logic
 	switch r.Method {
 	case http.MethodGet:
 		listHandler(w, r, resourceName)
