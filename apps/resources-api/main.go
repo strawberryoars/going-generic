@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
@@ -23,11 +25,8 @@ func init() {
 		log.Fatal("Error loading .env file")
 	}
 
-	// var err error
 	uri := os.Getenv("MONGODB_URI")
-	log.Println("uri: ", uri)
 	clientOptions := options.Client().ApplyURI(uri)
-
 	client, err = mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		panic(err)
@@ -36,6 +35,7 @@ func init() {
 }
 
 func handleRequest(w http.ResponseWriter, r *http.Request) {
+
 	// Get the 'collection' query parameter
 	collectionParam := r.URL.Query().Get("collection")
 	if collectionParam == "" {
@@ -67,6 +67,52 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
+func listHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
+	logMessage := fmt.Sprintf("TODO logic for handling GET request to /resources/%s", resourceName)
+	log.Println(logMessage)
+}
+
+func createHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
+	logMessage := fmt.Sprintf("TODO logic for handling POST request to /resources/%s", resourceName)
+	log.Println(logMessage)
+}
+
+func updateHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
+	logMessage := fmt.Sprintf("TODO logic for handling PUT request to /resources/%s", resourceName)
+	log.Println(logMessage)
+}
+
+func deleteHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
+	logMessage := fmt.Sprintf("TODO logic for handling DELETE request to /resources/%s", resourceName)
+	log.Println(logMessage)
+}
+
+func resourceHandler(w http.ResponseWriter, r *http.Request) {
+	// Split the URL path into parts
+	parts := strings.Split(r.URL.Path, "/")
+	if len(parts) < 3 || parts[1] != "resources" {
+		http.NotFound(w, r)
+		return
+	}
+
+	// The resource name is the third part of the URL
+	resourceName := parts[2]
+
+	// Now you can use resourceName in your handler logic
+	switch r.Method {
+	case http.MethodGet:
+		listHandler(w, r, resourceName)
+	case http.MethodPost:
+		createHandler(w, r, resourceName)
+	case http.MethodPut:
+		updateHandler(w, r, resourceName)
+	case http.MethodDelete:
+		deleteHandler(w, r, resourceName)
+	default:
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+	}
+}
+
 func main() {
 
 	defer func() {
@@ -80,6 +126,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.HandleFunc("/query", handleRequest)
+	http.HandleFunc("/resources/", resourceHandler)
 	http.ListenAndServe(":8080", nil)
 }
