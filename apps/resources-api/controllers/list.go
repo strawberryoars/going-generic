@@ -10,18 +10,24 @@ import (
 
 	"github.com/strawberryoars/going-generic/apps/resources-api/clients"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Generic List Resources endpoint - /resources/:resourceName?filter={}
+// Generic List Resources endpoint - /resources/:resourceName?filter={}&sort={}
 // URI components should be encoded like so:
 //
 //	let jsonString = '{"type":"article"}';
 //	let encodedJson = encodeURIComponent(jsonString);
 //	let url = `http://localhost:8080/resources/blog?filter=${encodedJson}`;
 //
+// Sorting:
+// sort order: 1 for ascendeing and -1 for descending
+// sort = { key: order }
+//
 // For Example:
 //
 //	http://localhost:8080/resources/blogs?filter=%7B%22type%22%3A%22article%22%7D
+//	http://localhost:8080/resources/blogs?sort=%7B%22type%22%3A1%7D
 func ListHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
 	logMessage := fmt.Sprintf("ListHandler - GET request /resources/%s", resourceName)
 	log.Println(logMessage)
@@ -49,8 +55,30 @@ func ListHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
 		filter = bson.D{}
 	}
 
+	var sort bson.D
+	sortParam := r.URL.Query().Get("sort")
+
+	if sortParam != "" {
+		decodedSortParam, err := url.QueryUnescape(sortParam)
+		if err != nil {
+			log.Println("Failed to decode sort query parameter: ", err)
+			http.Error(w, "Invalid sort query parameter", http.StatusBadRequest)
+			return
+		}
+
+		err = bson.UnmarshalExtJSON([]byte(decodedSortParam), true, &sort)
+		if err != nil {
+			log.Println("Failed to parse sort query parameter:", err)
+			http.Error(w, "Invalid sort query parameter", http.StatusBadRequest)
+			return
+		}
+	} else {
+		sort = bson.D{}
+	}
+
+	opts := options.Find().SetSort(sort)
 	var results []map[string]interface{}
-	cursor, err := collection.Find(context.TODO(), filter)
+	cursor, err := collection.Find(context.TODO(), filter, opts)
 	if err != nil {
 		panic(err)
 	}
