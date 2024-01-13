@@ -26,7 +26,8 @@ func ResourcesRouter(w http.ResponseWriter, r *http.Request) {
 		resourceId := parts[3]
 		UpdateHandler(w, r, resourceName, resourceId)
 	case http.MethodDelete:
-		DeleteHandler(w, r, resourceName)
+		resourceId := parts[3]
+		DeleteHandler(w, r, resourceName, resourceId)
 	default:
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
