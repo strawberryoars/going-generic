@@ -1,14 +1,22 @@
-# resources-api
+# resources-api - simple generic resources web server:
 
-Simple generic resources web server:
+Generic resources as they are defined here are json objects.
+These resources will have their own MongoDB collection for storage.
+Each resource should have a defined JSON schema to enforce validation on creation and updates.
+
 - serves generic resources from MongoDB
+    - supports CRUD
     - support for filter, sort, and pagination
-    - resources should have a defined schema in schemas-api app
-- CRUD support w/ json patch history
-    - resources correspond to a collection in MongoDB. API will support CRUD.
+
+
+## TODO
+- json patch history
     - endpoint to list json patch history for a given resource
-    - argo events for notification of changes to generic resources
-- archive support w/ arhival collections for resources
+- argo resource events
+    - generate notifications if a resource is failed to be created, updated, or deleted. Dev channel.
+    - generate event when created, updated, or deleted. Could be a cloudevent that is consumed to replicate data to other clusters or for consumers who want to be aware of changes
+- evaluate archive support
+    - could have an archival collection for each resource collection so users can retain data without deleting permanently
 
 
 # devlopment
