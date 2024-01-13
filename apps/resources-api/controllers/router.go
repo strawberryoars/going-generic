@@ -5,6 +5,9 @@ import (
 	"strings"
 )
 
+// Generic Resources API Router
+// Doing this because I want to avoid any Golang webframework
+// Can simply manage the API endpoints this way for now
 func ResourcesRouter(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 	if len(parts) < 3 || parts[1] != "resources" {
@@ -20,7 +23,8 @@ func ResourcesRouter(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		CreateHandler(w, r, resourceName)
 	case http.MethodPut:
-		UpdateHandler(w, r, resourceName)
+		resourceId := parts[3]
+		UpdateHandler(w, r, resourceName, resourceId)
 	case http.MethodDelete:
 		DeleteHandler(w, r, resourceName)
 	default:

@@ -1,10 +1,14 @@
 # resources-api
 
-Simple web server:
-- serves generic resources from DB
+Simple generic resources web server:
+- serves generic resources from MongoDB
+    - support for filter, sort, and pagination
+    - resources should have a defined schema in schemas-api app
 - CRUD support w/ json patch history
-- endpoint to list json patch history for a given resource
-- argo events for notification of changes to generic resources
+    - resources correspond to a collection in MongoDB. API will support CRUD.
+    - endpoint to list json patch history for a given resource
+    - argo events for notification of changes to generic resources
+- archive support w/ arhival collections for resources
 
 
 # devlopment
