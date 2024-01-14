@@ -1,0 +1,73 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "title": "Metric Schema",
+    "type": "object",
+    "default": {},
+    "required": [
+        "name",
+        "description",
+        "unit",
+        "attributes",
+        "value",
+        "time_unix_nano"
+    ],
+    "properties": {
+        "name": {
+            "title": "The name Schema",
+            "type": "string",
+            "default": "",
+            "examples": [
+                "gauge"
+            ]
+        },
+        "description": {
+            "title": "The description Schema",
+            "type": "string",
+            "default": "",
+            "examples": [
+                "my gauge"
+            ]
+        },
+        "unit": {
+            "title": "The unit Schema",
+            "type": "string",
+            "default": "",
+            "examples": [
+                "Celsius"
+            ]
+        },
+        "attributes": {
+            "title": "The attributes Schema",
+            "type": "object",
+            "default": {},
+            "required": [],
+            "properties": {},
+            "examples": [{}]
+        },
+        "value": {
+            "title": "The value Schema",
+            "type": "integer",
+            "default": 0,
+            "examples": [
+                44
+            ]
+        },
+        "time_unix_nano": {
+            "title": "The time_unix_nano Schema",
+            "type": "integer",
+            "default": 0,
+            "examples": [
+                170520618653603
+            ]
+        }
+    },
+    "examples": [{
+        "name": "gauge",
+        "description": "my gauge",
+        "unit": "Celsius",
+        "attributes": {},
+        "value": 44,
+        "time_unix_nano": 170520618653603
+    }]
+}
