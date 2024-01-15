@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/santhosh-tekuri/jsonschema/v5"
 	"github.com/strawberryoars/going-generic/apps/resources-api/clients"
 )
 
@@ -17,6 +18,7 @@ import (
 //
 // Examples:
 // curl -X POST -H "Content-Type: application/json" -d '{"type": "cajun", "hello": "stirfry"}' http://localhost:8080/resources/blogs
+// curl -X POST -H "Content-Type: application/json" -d '{"name":"gauge","description":"my gauge","unit":"Celsius","attributes":{},"value":44,"time_unix_nano":170520618653603}' http://localhost:8080/resources/metric
 func CreateHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
 	logMessage := fmt.Sprintf("CreateHandler - POST request /resources/%s", resourceName)
 	log.Println(logMessage)
@@ -28,6 +30,17 @@ func CreateHandler(w http.ResponseWriter, r *http.Request, resourceName string) 
 	if err != nil {
 		log.Println("Failed to decode request body:", err)
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	sch, err := jsonschema.CompileString(resourceName, clients.Schemas[resourceName])
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Resource schema error: %v", err), http.StatusBadRequest)
+		return
+	}
+
+	if err = sch.Validate(newResource); err != nil {
+		http.Error(w, fmt.Sprintf("Invalid resource: %v", err), http.StatusBadRequest)
 		return
 	}
 
