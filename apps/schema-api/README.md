@@ -1,5 +1,11 @@
 # schema-api
 
+```
+curl http://localhost:3000/schemas/metric.schema
+curl http://localhost:3000/faker/metric
+```
+
+## Development 
 To install dependencies:
 
 ```bash

@@ -1,5 +1,5 @@
 {
-  "$id": "https://example.com/blog-post.schema.json",
+  "$id": "https://example.com/schemas/blog.schema",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "A representation of a blog post",
   "type": "object",
