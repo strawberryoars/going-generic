@@ -10,6 +10,7 @@ import (
 
 func init() {
 	clients.InitMongoConnection()
+	clients.InitSchemas()
 }
 
 func main() {

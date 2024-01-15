@@ -28,9 +28,9 @@ import (
 //
 // For Example:
 //
-//	curl -X GET 'http://localhost:8080/resources/blogs?page=1&pageSize=1
+//	curl -X GET 'http://localhost:8080/resources/blogs?page=1&pageSize=1'
 //	curl -X GET 'http://localhost:8080/resources/blogs?filter=%7B%22type%22%3A%22article%22%7D&page=1&pageSize=10'
-//	curl -X GET 'http://localhost:8080/resources/blogs?sort=%7B%22type%22%3A1%7D&page=1&pageSize=10
+//	curl -X GET 'http://localhost:8080/resources/blogs?sort=%7B%22type%22%3A1%7D&page=1&pageSize=10'
 func ListHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
 	logMessage := fmt.Sprintf("ListHandler - GET request /resources/%s", resourceName)
 	log.Println(logMessage)
