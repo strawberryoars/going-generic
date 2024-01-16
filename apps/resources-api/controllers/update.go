@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/santhosh-tekuri/jsonschema/v5"
 	"github.com/strawberryoars/going-generic/apps/resources-api/clients"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -18,8 +19,8 @@ import (
 // validation with JSON schemas
 //
 // Examples:
-// curl -X PUT -H "Content-Type: application/json" -d '{"hello": "taro"}' http://localhost:8080/resources/blogs/65a095882a40f07a96eb176e
-// curl -X PUT -H "Content-Type: application/json" -d '{"hello": "DAWG"}' http://localhost:8080/resources/blogs/65a0967a76f3cb4d9891cdcb
+// curl -X PUT -H "Content-Type: application/json" -d '{"type": "dingo", "hello": "DAWG"}' http://localhost:8080/resources/test/65a5da5a7633ad2102896d2f
+// curl -X PUT -H "Content-Type: application/json" -d '{"name":"gauge","description":"my gauge","unit":"Celsius","attributes":{},"value":72,"time_unix_nano":170520618653603}'http://localhost:8080/resources/metric/65a5d4493ae6a896bdeda729
 func UpdateHandler(w http.ResponseWriter, r *http.Request, resourceName string, resourceId string) {
 	logMessage := fmt.Sprintf("UpdateHandler - PUT request /resources/%s/%s", resourceName, resourceId)
 	log.Println(logMessage)
@@ -38,6 +39,17 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request, resourceName string, 
 	if err != nil {
 		log.Println("Failed to parse resourceId:", err)
 		http.Error(w, "Invalid resourceId", http.StatusBadRequest)
+		return
+	}
+
+	sch, err := jsonschema.CompileString(resourceName, clients.Schemas[resourceName])
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Resource schema error: %v", err), http.StatusBadRequest)
+		return
+	}
+
+	if err = sch.Validate(updatedResource); err != nil {
+		http.Error(w, fmt.Sprintf("Invalid resource: %v", err), http.StatusBadRequest)
 		return
 	}
 

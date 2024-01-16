@@ -13,11 +13,11 @@ import (
 
 // Generic Create Resource Endpoint - /resources/:resourceName
 //
-// TODO:
-// validation with JSON schemas
-//
 // Examples:
-// curl -X POST -H "Content-Type: application/json" -d '{"type": "cajun", "hello": "stirfry"}' http://localhost:8080/resources/blogs
+// curl -X POST -H "Content-Type: application/json" -d '{"type": "apple", "hello": "world"}' http://localhost:8080/resources/test
+// curl -X POST -H "Content-Type: application/json" -d '{"type": "banjo", "hello": "music"}' http://localhost:8080/resources/test
+// curl -X POST -H "Content-Type: application/json" -d '{"type": "cajun", "hello": "stirfry"}' http://localhost:8080/resources/test
+// curl -X POST -H "Content-Type: application/json" -d '{"type": "dingo", "hello": "dawg"}' http://localhost:8080/resources/test
 // curl -X POST -H "Content-Type: application/json" -d '{"name":"gauge","description":"my gauge","unit":"Celsius","attributes":{},"value":44,"time_unix_nano":170520618653603}' http://localhost:8080/resources/metric
 func CreateHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
 	logMessage := fmt.Sprintf("CreateHandler - POST request /resources/%s", resourceName)
