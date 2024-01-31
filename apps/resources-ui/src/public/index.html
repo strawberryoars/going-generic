@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTMX Example</title>
+    <script src="https://unpkg.com/htmx.org@1.6.1"></script>
+</head>
+<body>
+    <h1>Hello, HTMX!</h1>
+    <form hx-post="/todos" hx-swap="outerHTML">
+        <input type="text" name="task" placeholder="New task" required>
+        <button type="submit">Add Task</button>
+    </form>
+    <ul id="tasks"></ul>
+    <script>
+        // Your JavaScript code here
+    </script>
+</body>
+</html>

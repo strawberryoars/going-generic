@@ -16,7 +16,7 @@ import (
 // Generic Update Resource Endpoint - /resources/:resourceName/:resourceId
 //
 // TODO:
-// validation with JSON schemas
+// validation on patch updates
 //
 // Examples:
 // curl -X PUT -H "Content-Type: application/json" -d '{"type": "dingo", "hello": "DAWG"}' http://localhost:8080/resources/test/65a5da5a7633ad2102896d2f
