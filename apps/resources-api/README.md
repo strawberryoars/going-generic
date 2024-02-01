@@ -19,7 +19,7 @@ Each resource should have a defined JSON schema to enforce validation on creatio
     - could have an archival collection for each resource collection so users can retain data without deleting permanently
 
 
-# devlopment
+## devlopment
 
 Install [GVM](https://github.com/moovweb/gvm)
 
