@@ -10,7 +10,6 @@ import (
 )
 
 func ListHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
-	// resp, err := http.Get("http://localhost:8080/resources/test?page=1&pageSize=2")
 	parts := strings.Split(r.URL.Path, "/")
 	baseUrl := "http://localhost:8080/resources/" + parts[2]
 	fullUrl := baseUrl + "?" + r.URL.RawQuery
@@ -36,6 +35,7 @@ func ListHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
 
 	// Parse Pagination Query Parameter
 	pageParam := r.URL.Query().Get("page")
+	pageSizeParam := r.URL.Query().Get("pageSize")
 
 	pageNumber, err := strconv.Atoi(pageParam)
 	if err != nil || pageNumber < 1 {
@@ -43,20 +43,35 @@ func ListHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
 		http.Error(w, "Invalid or missing page number", http.StatusBadRequest)
 		return
 	}
+
+	pageSize, err := strconv.Atoi(pageSizeParam)
+	if err != nil || pageSize < 1 {
+		log.Println("Invalid or missing page size")
+		http.Error(w, "Invalid or missing page size", http.StatusBadRequest)
+		return
+	}
+
+	pagination := resources["pagination"].(map[string]interface{})
+	total := pagination["total"].(float64)
+	totalNumberOfDocuements := int(total)
+
 	// Process the resources and generate the HTML
 	html := ""
-	results := resources["results"].([]interface{})
-	for _, resource := range results {
-		resourceMap := resource.(map[string]interface{})
-		typeField := resourceMap["type"].(string)
-		html += `<tr 
-			hx-get="/resources/test?page=` + strconv.Itoa(pageNumber+1) + `&pageSize=2"
-			hx-trigger="revealed"
-			hx-swap="afterend">
-				<td>` +
-			typeField +
-			`</td>` +
-			`</tr>`
+	if resources["results"] != nil {
+		results := resources["results"].([]interface{})
+		for _, resource := range results {
+			resourceMap := resource.(map[string]interface{})
+			typeField := resourceMap["type"].(string)
+			if pageNumber*pageSize < totalNumberOfDocuements {
+				html += `<tr hx-get="/resources/test?page=` + strconv.Itoa(pageNumber+1) + `&pageSize=` + strconv.Itoa(pageSize) + `" hx-trigger="revealed" hx-swap="afterend">`
+			} else {
+				html += `<tr>`
+			}
+			html += `<td>`
+			html += typeField
+			html += `</td>`
+			html += `</tr>`
+		}
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")

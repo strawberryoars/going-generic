@@ -5,13 +5,8 @@
     <script src="https://unpkg.com/htmx.org@1.6.1"></script>
 </head>
 <body>
-    <h1>Hello, HTMX!</h1>
-    <form hx-post="/todos" hx-swap="outerHTML">
-        <input type="text" name="task" placeholder="New task" required>
-        <button type="submit">Add Task</button>
-    </form>
-    <ul id="tasks"></ul>
-    <table>
+    <h1>Generic Resources x HTMX</h1>
+    <table class="resources_table">
         <thead>
             <tr>
                 <th> Resource </th>
@@ -23,11 +18,20 @@
                 hx-trigger="revealed"
                 hx-swap="afterend"
                 hx-request='{"noHeaders": true}'>
-                <!-- <td>Agent Smith</td>
-                <td>void29@null.org</td>
-                <td>55F49448C0</td> -->
             </tr>
         </tbody>
     </table>
+    <style>
+        .resources_table {
+            width: 100%;
+            height: 32px;
+            min-height: 32px;
+            max-height: 32px;
+            overflow: scroll;
+            background-color: #bbbbbb24;
+            padding: 8px;
+            border-radius: 8px;
+        }
+    </style>
 </body>
 </html>
