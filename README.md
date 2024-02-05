@@ -1,22 +1,27 @@
 # going-generic
 
+This repository will manage multiple microservices for generic json schema / resource architecure.
+Infrastructure will run on kubernetes [K3S](https://k3s.io/).
 
-## Project Plan
+Learn about [JSON Schemas](https://json-schema.org/)
 
-This repository will manage multiple microservices for generic json schema / resource architecure
-- json schema server API
-    - serves json schemas to clients
-    - generator support (fake data that conforms to the schema)
-- generic golang resources API
-    - serves generic resources from DB
-    - CRUD support w/ json patch history
-    - endpoint to list json patch history for a given resource
-    - argo events for notification of changes to generic resources
-- storage layer(s)
-    - mongoDB, minio, etc.
-- UI to CRUD generic resources
-    - pages to view json patch history
-- UI to run visualizations on common probability and statistics
-    - this will leverage the generic resources UI
+## Project
 
-Infrastructure will run on kubernetes (k3s)
+Architecture was split into multiple miroservices for fun.
+I can explore and tinker with each different component of the arhcitecture with out it impacting the rest of the project.
+
+### schema-api
+JSON schema web server
+    - built off [ElysiaJS](https://elysiajs.com/) and [Bun](https://bun.sh/)
+    - serves JSON schemas to clients
+    - generator support (fake data that conforms to your schema by utilzing the [JSON Schema Faker](https://github.com/json-schema-faker/json-schema-faker) package)
+
+### resources-api
+Golang webserver for CRUD support on generic resources which are backed by a JSON schema on the schema-api
+    - serves generic resources from mongo
+    - CRUD support
+    - schema validation on CRUD operations
+
+### resouces-ui
+Simple generic resources UI built w/ [HTMX](https://htmx.org/)
+    - generic resources table w/ infinite scroll

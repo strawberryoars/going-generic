@@ -1,6 +1,11 @@
 
 # resources-ui
 
+Creating a generic resource table using HTMX.
+Infinite scroll of resources to lazily load resources as they come into the users viewport.
+
+TODO: column formatting
+TODO: cleanup server-side html templating
 
 ## devlopment
 
