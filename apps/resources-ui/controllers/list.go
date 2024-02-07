@@ -2,12 +2,20 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/tidwall/gjson"
 )
+
+type ColumnConfig struct {
+	ColumnName  string // Name of the column as displayed in the table
+	JsonPointer string // JSON Pointer to the value in the JSON object
+}
 
 func ListHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
 	parts := strings.Split(r.URL.Path, "/")
@@ -55,21 +63,47 @@ func ListHandler(w http.ResponseWriter, r *http.Request, resourceName string) {
 	total := pagination["total"].(float64)
 	totalNumberOfDocuements := int(total)
 
+	// hardcoded for now
+	columns := []ColumnConfig{
+		{
+			ColumnName:  "Type",
+			JsonPointer: "type",
+		},
+		{
+			ColumnName:  "Hello",
+			JsonPointer: "hello",
+		},
+	}
+
 	// Process the resources and generate the HTML
 	html := ""
 	if resources["results"] != nil {
 		results := resources["results"].([]interface{})
 		for _, resource := range results {
 			resourceMap := resource.(map[string]interface{})
-			typeField := resourceMap["type"].(string)
+			// typeField := resourceMap["type"].(string)
 			if pageNumber*pageSize < totalNumberOfDocuements {
 				html += `<tr hx-get="/resources/test?page=` + strconv.Itoa(pageNumber+1) + `&pageSize=` + strconv.Itoa(pageSize) + `" hx-trigger="revealed" hx-swap="afterend">`
 			} else {
 				html += `<tr>`
 			}
-			html += `<td>`
-			html += typeField
-			html += `</td>`
+			// html += `<td>`
+			// html += typeField
+			// html += `</td>`
+			for _, col := range columns {
+				// value := gjson.Get(resourceMap, col.JsonPointer) // Use gjson package to parse JSON pointers
+				// html += fmt.Sprintf("<td>%s</td>", value.String())
+				var resourceBytes []byte
+				if resourceBytes, err = json.Marshal(resourceMap); err != nil {
+					log.Println("Error marshaling resourceMap:", err)
+					continue
+				}
+
+				// Use gjson.GetBytes to get the value based on the JSON pointer
+				value := gjson.GetBytes(resourceBytes, col.JsonPointer).String()
+				html += fmt.Sprintf("<td>%s</td>", value)
+			}
+
 			html += `</tr>`
 		}
 	}
